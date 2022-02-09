@@ -19,9 +19,8 @@ namespace PyroAPI
             Ability = ability;
             Bind = bind;
             Item = item;
-            
-            Condition = gameObject.AddComponent<Condition>();
-            Condition.AllowCondition = condition;
+
+            Condition = gameObject.AddComponent<Condition>().Setup(Condition);
             
             item.OnHeldActionEvent += ItemHeldActionEvent;
         }
@@ -29,7 +28,7 @@ namespace PyroAPI
         private void ItemHeldActionEvent(RagdollHand ragdollHand, Handle handle, Interactable.Action action)
         {
             if (ragdollHand.creature.isPlayer && action == Bind && handle.item.itemId == Item.itemId &&
-                Condition.AllowCondition() && Condition.Allowed)
+                Condition.TryCondition() && Condition.Allowed)
                 Ability?.Invoke(ragdollHand, handle);
         }
     }

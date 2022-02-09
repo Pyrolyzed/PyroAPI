@@ -9,17 +9,19 @@ namespace PyroAPI
         public bool Allowed { get; set; } = true;
 
         // The condition to satisfy
-        public Func<bool> AllowCondition { get; set; }
+        public Func<bool> TryCondition { get; set; }
 
-        public void Setup(Func<bool> condition)
+        public Condition Setup(Func<bool> condition)
         {
-            AllowCondition = condition;
+            TryCondition = condition;
+            return this;
         }
 
-        public void Setup(bool allowed)
+        public Condition Setup(bool allowed)
         {
             Allowed = allowed;
-            AllowCondition = () => Allowed;
+            TryCondition = () => Allowed;
+            return this;
         }
     }
 }
