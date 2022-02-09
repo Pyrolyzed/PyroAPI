@@ -7,8 +7,8 @@ A API that adds some utility functions/classes for Blade &amp; Sorcery modding, 
 ## Weapon Abilities
 This is a class that inherits from `MonoBehaviour`, and can be used to create weapon abilities activated by pressing a button on your controller.
 To make one, you inherit from this class, you will still also inherit from `MonoBehaviour`, since the base class does.
-You then call `Setup(item, bind, ability, condition);`
-Or, alternatively, call `Setup(item, bind, ability);` for an ability that you can always use.
+You then call `Setup(bind, ability, condition);`
+Or, alternatively, call `Setup(bind, ability);` for an ability that you can always use.
 
 Example:
 ```cs
