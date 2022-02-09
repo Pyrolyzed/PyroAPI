@@ -14,23 +14,11 @@ Example:
 ```cs
 public class ExampleAbility : WeaponAbility
     {
-        private Item _item;
-        private Interactable.Action _bind;
-        
-        private void Awake()
-        {
-            Setup(_bind, Ability, Condition);
-        }
+        private void Awake() => Setup(Interactable.Action.AlternateUseStart, Ability, Condition);
 
-        private bool Condition(RagdollHand hand, Handle handle)
-        {
-            return hand.creature.isPlayer;
-        }
+        private bool Condition(RagdollHand hand, Handle handle) => hand.creature.isPlayer;
 
-        private void Ability(RagdollHand hand, Handle handle)
-        {
-            hand.creature.Kill();
-        }
+        private void Ability(RagdollHand hand, Handle handle) => hand.creature.Kill();
 
         public class ExampleItemModule : ItemModule
         {
