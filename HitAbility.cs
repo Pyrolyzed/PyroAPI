@@ -15,10 +15,10 @@ namespace PyroAPI
             OnHit = onHit;
             CollisionHandler.CollisionEvent onCollision = instance =>
             {
-                if (instance.damageStruct.hitRagdollPart?.ragdoll?.creature is Creature creature && item.handlers.TrueForAll(hand => hand.creature.isPlayer))
+                if (instance.damageStruct.hitRagdollPart?.ragdoll?.creature is Creature creature &&
+                    item.handlers.TrueForAll(hand => hand.creature.isPlayer))
                     OnHit?.Invoke(creature, instance);
             };
-            
             item.collisionHandlers.ForEach(i => i.OnCollisionStartEvent += onCollision);
         }
     }
