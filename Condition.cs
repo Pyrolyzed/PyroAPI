@@ -20,7 +20,6 @@ namespace PyroAPI
         public Condition Setup(bool allowed)
         {
             Allowed = allowed;
-            TryCondition = () => Allowed;
             return this;
         }
     }
