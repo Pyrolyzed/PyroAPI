@@ -14,12 +14,9 @@ Example:
 ```cs
 public class ExampleAbility : WeaponAbility
     {
-        private Item _item;
-        private Interactable.Action _bind;
-        
         private void Awake()
         {
-            Setup(_bind, Ability, Condition);
+            Setup(Interactable.Action.AlternateUseStart, Ability, Condition);
         }
 
         private bool Condition(RagdollHand hand, Handle handle)
