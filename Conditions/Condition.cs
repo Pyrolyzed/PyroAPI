@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace PyroAPI
+namespace PyroAPI.Conditions
 {
     public class Condition : MonoBehaviour
     {

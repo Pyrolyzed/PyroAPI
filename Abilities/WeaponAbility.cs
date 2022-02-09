@@ -1,8 +1,9 @@
-﻿using System;
+﻿using PyroAPI.Conditions;
+using System;
 using ThunderRoad;
 using UnityEngine;
 
-namespace PyroAPI
+namespace PyroAPI.Abilities
 {
     public class WeaponAbility : MonoBehaviour
     {
@@ -14,7 +15,8 @@ namespace PyroAPI
         public AbilityCondition Condition { get; set; }
 
 
-        protected WeaponAbility Setup(Interactable.Action bind, Action<RagdollHand, Handle> ability, Func<RagdollHand, Handle, bool> condition)
+        protected WeaponAbility Setup(Interactable.Action bind, Action<RagdollHand, Handle> ability,
+            Func<RagdollHand, Handle, bool> condition)
         {
             Ability = ability;
             Bind = bind;
@@ -22,7 +24,7 @@ namespace PyroAPI
                 throw new ApplicationException("WeaponAbility not attached to Item!");
             Item = gameObject.GetComponent<Item>();
             Condition = gameObject.AddComponent<AbilityCondition>().Setup(condition);
-            
+
             Item.OnHeldActionEvent += ItemHeldActionEvent;
 
             return this;
@@ -44,23 +46,11 @@ namespace PyroAPI
 
     public class ExampleAbility : WeaponAbility
     {
-        private Item _item;
-        private Interactable.Action _bind;
-        
-        private void Awake()
-        {
-            Setup(_bind, Ability, Condition);
-        }
+        private void Awake() => Setup(Interactable.Action.AlternateUseStart, Ability, Condition);
 
-        private bool Condition(RagdollHand hand, Handle handle)
-        {
-            return hand.creature.isPlayer;
-        }
+        private bool Condition(RagdollHand hand, Handle handle) => hand.creature.isPlayer;
 
-        private void Ability(RagdollHand hand, Handle handle)
-        {
-            hand.creature.Kill();
-        }
+        private void Ability(RagdollHand hand, Handle handle) => hand.creature.Kill();
 
         public class ExampleItemModule : ItemModule
         {
@@ -71,5 +61,4 @@ namespace PyroAPI
             }
         }
     }
-    
 }

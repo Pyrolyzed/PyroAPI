@@ -2,7 +2,7 @@
 using ThunderRoad;
 using UnityEngine;
 
-namespace PyroAPI
+namespace PyroAPI.Conditions
 {
     public class AbilityCondition : MonoBehaviour
     {
