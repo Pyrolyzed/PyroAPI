@@ -15,7 +15,7 @@ namespace PyroAPI.Abilities
         public AbilityCondition Condition { get; set; }
 
 
-        protected WeaponAbility Setup(Interactable.Action bind, Action<RagdollHand, Handle> ability,
+        public WeaponAbility Setup(Interactable.Action bind, Action<RagdollHand, Handle> ability,
             Func<RagdollHand, Handle, bool> condition)
         {
             Ability = ability;
@@ -30,7 +30,7 @@ namespace PyroAPI.Abilities
             return this;
         }
 
-        protected WeaponAbility Setup(Interactable.Action bind, Action<RagdollHand, Handle> ability)
+        public WeaponAbility Setup(Interactable.Action bind, Action<RagdollHand, Handle> ability)
         {
             Setup(bind, ability, (hand, handle) => true);
             return this;
