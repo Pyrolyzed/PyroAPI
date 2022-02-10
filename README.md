@@ -6,48 +6,58 @@ A API that adds some utility functions/classes for Blade &amp; Sorcery modding, 
 
 ## Weapon Abilities
 This is a class that inherits from `MonoBehaviour`, and can be used to create weapon abilities activated by pressing a button on your controller.
-To make one, you inherit from this class, you will still also inherit from `MonoBehaviour`, since the base class does.
-You then call `Setup(bind, ability, condition);`
-Or, alternatively, call `Setup(bind, ability);` for an ability that you can always use.
-
-Example:
-```cs
-public class ExampleAbility: WeaponAbility {
-  private void Awake() => Setup(Interactable.Action.AlternateUseStart, Ability, Condition);
-
-  private bool Condition(RagdollHand hand, Handle handle) => hand.creature.isPlayer;
-
-  private void Ability(RagdollHand hand, Handle handle) => hand.creature.Kill();
-
-  public class ExampleItemModule: ItemModule {
-    public override void OnItemLoaded(Item item) {
-      item.gameObject.AddComponent < ExampleAbility > ();
-      base.OnItemLoaded(item);
-    }
-  }
-}
-```
+To make one, Simply add it as a component onto a GameObject with an Item component, and call the `Setup()` method.
 
 ## Hit Abilities
 This is another class that inherits from `MonoBehaviour`, and can be used to create abilities that trigger whenever a weapon hits something.
 **Note: This class ONLY works when the weapon is held by the player, and the weapon hits a Creature**
 
-To make one, inherit from this class, and call `Setup(ability, condition)` inside of `Awake()`, or call `Setup(ability)` for a effect that always happens on hit.
+To make one, add it as a component onto a GameObject with an Item component, and call the `Setup()` method.
 
-Example:
+
+# Example Weapon
 ```cs
-public class ExampleHitAbility: HitAbility {
-  private void Awake() => Setup(OnHit, Condition);
+public class AwesomeWeapon : MonoBehaviour
+    {
+        private HitAbility _hitAbility;
+        private WeaponAbility _weaponAbility;
 
-  private void OnHit(Creature creature, CollisionInstance instance) => instance.damageStruct.damage *= 100;
+        public void Awake()
+        {
+            _hitAbility = gameObject.AddComponent<HitAbility>().Setup(OnHit, HitCondition);
+            _weaponAbility = gameObject.AddComponent<WeaponAbility>().Setup(Interactable.Action.AlternateUseStart,
+                Ability, AbilityCondition);
+        }
 
-  private bool Condition(Creature creature, CollisionInstance collisionInstance) => creature.isPlayer;
+        private bool AbilityCondition(RagdollHand hand, Handle handle)
+        {
+            // Can be any statement that returns a bool
+            
+            return true;
+        }
 
-  public class ExampleHitItemModule: ItemModule {
-    public override void OnItemLoaded(Item item) {
-      item.gameObject.AddComponent < ExampleHitAbility > ();
-      base.OnItemLoaded(item);
+        private void Ability(RagdollHand hand, Handle handle)
+        {
+            AreaUtils.GetCreaturesInRadius(hand.creature.transform.position, 10f).ForEach(creature => creature.Kill());
+        }
+
+        private bool HitCondition(Creature creature, CollisionInstance instance)
+        {
+            return true;
+        }
+
+        private void OnHit(Creature creature, CollisionInstance instance)
+        {
+            Debug.Log("STRIKE!");
+        }
     }
-  }
-}
+
+    public class WeaponModule : ItemModule
+    {
+        public override void OnItemLoaded(Item item)
+        {
+            item.gameObject.AddComponent<AwesomeWeapon>();
+            base.OnItemLoaded(item);
+        }
+    }
 ```
