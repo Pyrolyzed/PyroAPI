@@ -36,29 +36,11 @@ namespace PyroAPI.Abilities
             return this;
         }
 
-        private void ItemHeldActionEvent(RagdollHand ragdollHand, Handle handle, Interactable.Action action)
+        private void ItemHeldActionEvent(RagdollHand hand, Handle handle, Interactable.Action action)
         {
-            if (ragdollHand.creature.isPlayer && action == Bind && handle.item.itemId == Item.itemId &&
-                Condition.TryCondition(ragdollHand, handle) && Condition.Allowed)
-                Ability?.Invoke(ragdollHand, handle);
-        }
-    }
-
-    public class ExampleAbility : WeaponAbility
-    {
-        private void Awake() => Setup(Interactable.Action.AlternateUseStart, Ability, Condition);
-
-        private bool Condition(RagdollHand hand, Handle handle) => hand.creature.isPlayer;
-
-        private void Ability(RagdollHand hand, Handle handle) => hand.creature.Kill();
-
-        public class ExampleItemModule : ItemModule
-        {
-            public override void OnItemLoaded(Item item)
-            {
-                item.gameObject.AddComponent<ExampleAbility>();
-                base.OnItemLoaded(item);
-            }
+            if (hand.creature.isPlayer && action == Bind &&
+                Condition.TryCondition(hand, handle) && Condition.Allowed)
+                Ability?.Invoke(hand, handle);
         }
     }
 }

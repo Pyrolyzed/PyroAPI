@@ -36,7 +36,7 @@ namespace PyroAPI.Abilities
             CollisionHandler.CollisionEvent onCollision = instance =>
             {
                 if (instance.damageStruct.hitRagdollPart?.ragdoll?.creature is Creature creature &&
-                    Item.handlers.TrueForAll(hand => hand.creature.isPlayer) &&
+                    (bool) Item.mainHandler?.creature?.isPlayer &&
                     Condition.TryCondition(creature, instance) &&
                     Condition.Allowed)
                     OnHit?.Invoke(creature, instance);

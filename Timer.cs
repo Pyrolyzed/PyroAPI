@@ -14,8 +14,8 @@ namespace PyroAPI
         public Action OnTimerEnd { get; set; }
 
         public Action OnTimerStart { get; set; }
-        
-        public bool Active { get; private set; }
+
+        public bool Active { get; set; }
         
         public void Setup(float duration, Action onTimerEnd, bool destroyFinish = false)
         {
