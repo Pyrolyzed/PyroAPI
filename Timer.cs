@@ -1,4 +1,5 @@
 ﻿using System;
+using ThunderRoad;
 using UnityEngine;
 
 namespace PyroAPI
@@ -15,23 +16,47 @@ namespace PyroAPI
 
         public Action OnTimerStart { get; set; }
 
+        public Action<float> OnTimerTick { get; set; }
+
         public bool Active { get; set; }
         
-        public void Setup(float duration, Action onTimerEnd, bool destroyFinish = false)
+        public Timer Setup(float duration, Action onTimerEnd, bool destroyFinish = false)
         {
             Duration = duration;
             RemainingSeconds = duration;
             OnTimerEnd = onTimerEnd;
             DestroyOnFinish = destroyFinish;
+            return this;
         }
 
-        public void Setup(float duration, Action onTimerStart, Action onTimerEnd, bool destroyFinish = false)
+        public Timer Setup(float duration, Action onTimerStart, Action onTimerEnd, bool destroyFinish = false)
         {
             Duration = duration;
             RemainingSeconds = duration;
             OnTimerStart = onTimerStart;
             OnTimerEnd = onTimerEnd;
             DestroyOnFinish = destroyFinish;
+            return this;
+        }
+        
+        public Timer Setup(float duration, Action onTimerStart, Action<float> onTimerTick, bool destroyFinish = false)
+        {
+            Duration = duration;
+            RemainingSeconds = duration;
+            OnTimerStart = onTimerStart;
+            OnTimerTick = onTimerTick;
+            DestroyOnFinish = destroyFinish;
+            return this;
+        }
+        public Timer Setup(float duration, Action onTimerStart, Action onTimerEnd, Action<float> onTimerTick, bool destroyFinish = false)
+        {
+            Duration = duration;
+            RemainingSeconds = duration;
+            OnTimerStart = onTimerStart;
+            OnTimerEnd = onTimerEnd;
+            DestroyOnFinish = destroyFinish;
+            OnTimerTick = onTimerTick;
+            return this;
         }
 
         public void StartTimer()
@@ -52,6 +77,7 @@ namespace PyroAPI
         private void TickTimer()
         {
             RemainingSeconds -= Time.deltaTime;
+            OnTimerTick?.Invoke(RemainingSeconds);
             if (RemainingSeconds <= 0)
                 EndTimer();
         }

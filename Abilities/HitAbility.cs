@@ -45,5 +45,13 @@ namespace PyroAPI.Abilities
 
             return this;
         }
+
+        public void SetCondition(Func<Creature, CollisionInstance, bool> condition, bool overwrite = true)
+        {
+            if (overwrite)
+                Condition.TryCondition = condition;
+            else
+                Condition.TryCondition += condition;
+        }
     }
 }

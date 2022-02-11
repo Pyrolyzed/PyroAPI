@@ -20,6 +20,8 @@ namespace PyroAPI
         // The action the cooldown performs when it starts
         public Action OnCooldownStart { get; set; }
 
+        public Action<float> OnCooldownTick { get; set; }
+        
         // Is the cooldown currently running?
         public bool OnCooldown { get; set; }
 
@@ -38,6 +40,24 @@ namespace PyroAPI
             DestroyOnFinish = destroyFinish;
         }
 
+        
+        public void Setup(float length, Action onEnd, Action<float> onTick, bool destroyFinish = false)
+        {
+            CooldownLength = length;
+            OnCooldownEnd = onEnd;
+            OnCooldownTick = onTick;
+            DestroyOnFinish = destroyFinish;
+        }
+
+        public void Setup(float length, Action onEnd, Action onStart, Action<float> onTick, bool destroyFinish = false)
+        {
+            CooldownLength = length;
+            OnCooldownEnd = onEnd;
+            OnCooldownStart = onStart;
+            OnCooldownTick = onTick;
+            DestroyOnFinish = destroyFinish;
+        }
+        
         public void StartCooldown()
         {
             OnCooldown = true;
@@ -56,6 +76,7 @@ namespace PyroAPI
         private void TickCooldown()
         {
             SecondsRemaining -= Time.deltaTime;
+            OnCooldownTick?.Invoke(SecondsRemaining);
             if (SecondsRemaining <= 0)
                 EndCooldown();
         }

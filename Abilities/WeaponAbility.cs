@@ -14,7 +14,6 @@ namespace PyroAPI.Abilities
 
         public AbilityCondition Condition { get; set; }
 
-
         public WeaponAbility Setup(Interactable.Action bind, Action<RagdollHand, Handle> ability,
             Func<RagdollHand, Handle, bool> condition)
         {
@@ -30,12 +29,22 @@ namespace PyroAPI.Abilities
             return this;
         }
 
+        
+        
         public WeaponAbility Setup(Interactable.Action bind, Action<RagdollHand, Handle> ability)
         {
             Setup(bind, ability, (hand, handle) => true);
             return this;
         }
 
+        public void SetCondition(Func<RagdollHand, Handle, bool> condition, bool overwrite = true)
+        {
+            if (overwrite)
+                Condition.TryCondition = condition;
+            else
+                Condition.TryCondition += condition;
+        }
+        
         private void ItemHeldActionEvent(RagdollHand hand, Handle handle, Interactable.Action action)
         {
             if (hand.creature.isPlayer && action == Bind &&
