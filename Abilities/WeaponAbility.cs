@@ -1,55 +1,40 @@
 ﻿using PyroAPI.Conditions;
 using System;
 using ThunderRoad;
-using UnityEngine;
 
 namespace PyroAPI.Abilities
 {
-    public class WeaponAbility : MonoBehaviour
+    public class WeaponAbility : Ability<RagdollHand, Handle>
     {
-        public Action<RagdollHand, Handle> Ability { get; set; }
         public Item Item { get; set; }
 
         public Interactable.Action Bind { get; set; }
 
-        public AbilityCondition Condition { get; set; }
-
-        public WeaponAbility Setup(Interactable.Action bind, Action<RagdollHand, Handle> ability,
+        public void Setup(Interactable.Action bind, Action<RagdollHand, Handle> ability,
             Func<RagdollHand, Handle, bool> condition)
         {
-            Ability = ability;
+            OnAbility = ability;
             Bind = bind;
             if (!gameObject.GetComponent<Item>())
                 throw new ApplicationException("WeaponAbility not attached to Item!");
             Item = gameObject.GetComponent<Item>();
-            Condition = gameObject.AddComponent<AbilityCondition>().Setup(condition);
+            Condition = gameObject.AddComponent<Condition<RagdollHand, Handle>>().Setup(condition);
 
             Item.OnHeldActionEvent += ItemHeldActionEvent;
-
-            return this;
         }
 
         
         
-        public WeaponAbility Setup(Interactable.Action bind, Action<RagdollHand, Handle> ability)
+        public void Setup(Interactable.Action bind, Action<RagdollHand, Handle> ability)
         {
             Setup(bind, ability, (hand, handle) => true);
-            return this;
         }
 
-        public void SetCondition(Func<RagdollHand, Handle, bool> condition, bool overwrite = true)
-        {
-            if (overwrite)
-                Condition.TryCondition = condition;
-            else
-                Condition.TryCondition += condition;
-        }
-        
         private void ItemHeldActionEvent(RagdollHand hand, Handle handle, Interactable.Action action)
         {
             if (hand.creature.isPlayer && action == Bind &&
                 Condition.TryCondition(hand, handle) && Condition.Allowed)
-                Ability?.Invoke(hand, handle);
+                OnAbility?.Invoke(hand, handle);
         }
     }
 }

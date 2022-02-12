@@ -5,33 +5,30 @@ using UnityEngine;
 
 namespace PyroAPI.Abilities
 {
-    public class HitAbility : MonoBehaviour
+    public class HitAbility : Ability<Creature, CollisionInstance>
     {
-        public Action<Creature, CollisionInstance> OnHit { get; set; }
         public Item Item { get; set; }
-        public HitCondition Condition { get; set; }
 
         /*
          * Create an ALWAYS ACTIVE hit ability
          */
-        public HitAbility Setup(Action<Creature, CollisionInstance> onHit)
+        public void Setup(Action<Creature, CollisionInstance> onHit)
         {
             Setup(onHit, (creature, instance) => true);
-            return this;
         }
 
         /*
          * Create a hit ability that must satisfy the Condition
          */
-        public HitAbility Setup(Action<Creature, CollisionInstance> onHit,
+        public void Setup(Action<Creature, CollisionInstance> onHit,
             Func<Creature, CollisionInstance, bool> condition)
         {
             if (!gameObject.GetComponent<Item>())
                 throw new Exception("No Item on HitAbility gameObject");
             Item = gameObject.GetComponent<Item>();
-            OnHit = onHit;
+            OnAbility = onHit;
 
-            Condition = gameObject.AddComponent<HitCondition>().Setup(condition);
+            Condition = gameObject.AddComponent<Condition<Creature, CollisionInstance>>().Setup(condition);
 
             CollisionHandler.CollisionEvent onCollision = instance =>
             {
@@ -39,19 +36,10 @@ namespace PyroAPI.Abilities
                     (bool) Item.mainHandler?.creature?.isPlayer &&
                     Condition.TryCondition(creature, instance) &&
                     Condition.Allowed)
-                    OnHit?.Invoke(creature, instance);
+                    OnAbility?.Invoke(creature, instance);
             };
             Item.collisionHandlers.ForEach(i => i.OnCollisionStartEvent += onCollision);
 
-            return this;
-        }
-
-        public void SetCondition(Func<Creature, CollisionInstance, bool> condition, bool overwrite = true)
-        {
-            if (overwrite)
-                Condition.TryCondition = condition;
-            else
-                Condition.TryCondition += condition;
         }
     }
 }
